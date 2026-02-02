@@ -417,9 +417,8 @@
         }
 
         function openPhotosLibrary() {
-            // Open Photos app directly to the library/all photos view
-            // Using photos-navigation scheme to force opening to the recents/all photos album
-            window.location.href = 'photos-navigation://album?name=recents';
+            // Run the RecentPhotos shortcut
+            window.location.href = 'shortcuts://run-shortcut?name=RecentPhotos';
         }
 
         // --- MODAL MANIPULATION ---

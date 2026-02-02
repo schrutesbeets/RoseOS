@@ -418,7 +418,8 @@
 
         function openPhotosLibrary() {
             // Open Photos app directly to the library/all photos view
-            window.location.href = 'photos-redirect://';
+            // Using photos-navigation scheme to force opening to the recents/all photos album
+            window.location.href = 'photos-navigation://album?name=recents';
         }
 
         // --- MODAL MANIPULATION ---

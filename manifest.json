@@ -1,0 +1,22 @@
+{
+  "name": "RoseOS",
+  "short_name": "RoseOS",
+  "version": "1.0.1",
+  "start_url": "./index.html?v=1.0.1",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "https://placehold.co/192x192/black/white?text=R",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://placehold.co/512x512/black/white?text=RoseOS",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait"
+}

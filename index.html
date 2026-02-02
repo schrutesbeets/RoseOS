@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>RoseOS</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 
+           RoseOS Design System 
+           Focus: High Contrast, AAA Accessibility, Native Scaling
+        */
+
+        :root {
+            /* System Colors for Auto Dark/Light Mode + High Contrast */
+            /* Using modern CSS System Colors */
+            --bg-color: Canvas;
+            --text-color: CanvasText;
+            --link-color: LinkText;
+
+            /* Dimensions */
+            --btn-min-height: 80px;
+            --border-width: 2px;
+            --gap-size: 1.5rem;
+
+            /* Typography */
+            /* Using rem to respect user's font size settings */
+            --font-base: 1.5rem;
+            /* Approx 24px default */
+            --font-lg: 2rem;
+            --font-xl: 3rem;
+
+            /* Misc */
+            --radius: 4px;
+            /* Slight round, but stark */
+        }
+
+        /* 
+           Force high contrast overrides if system colors fail or for specific aesthetic 
+           Using a media query specific approach for more control if needed 
+        */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* System colors usually handle this, but enforcing high contrast feel */
+                --bg-color: #000000;
+                --text-color: #FFFFFF;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-color: #FFFFFF;
+                --text-color: #000000;
+            }
+        }
+
+        /* 
+           High Contrast Mode Override
+        */
+        @media (prefers-contrast: more) {
+            :root {
+                --border-width: 4px;
+                /* Thicker borders */
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overscroll-behavior-y: none;
+            /* Prevent bounce */
+        }
+
+        h1 {
+            font-size: var(--font-xl);
+            margin: 0.5rem 0 1.5rem 0;
+            text-align: left;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: var(--font-lg);
+            margin: 0 0 1rem 0;
+        }
+
+        /* The Main Stack */
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-size);
+            flex: 1;
+        }
+
+        /* Rose Rules: Action Buttons */
+        .rose-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: var(--btn-min-height);
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: var(--border-width) solid var(--text-color);
+            border-radius: var(--radius);
+            font-size: var(--font-base);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: none;
+            /* Strict Rule: No soft shadows */
+            padding: 1rem;
+            text-align: center;
+            /* Enhance touch target */
+            touch-action: manipulation;
+            transition: transform 0.1s;
+        }
+
+        .rose-btn:active,
+        .rose-btn.active {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            transform: scale(0.98);
+        }
+
+        .rose-btn.secondary {
+            font-size: 1.25rem;
+            min-height: 60px;
+        }
+
+        /* Inputs */
+        .rose-input {
+            width: 100%;
+            font-size: var(--font-base);
+            padding: 1rem;
+            border: var(--border-width) solid var(--text-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            border-radius: var(--radius);
+        }
+
+        .rose-input:focus {
+            outline: 3px solid var(--text-color);
+            outline-offset: 4px;
+        }
+
+        /* Search Layout */
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Dialog/Modal Styling */
+        dialog {
+            width: 90vw;
+            max-width: 600px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: var(--border-width) solid var(--text-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        dialog::backdrop {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0 0.5rem;
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 50vh;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        /* Settings Area */
+        .settings-link {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .settings-link button {
+            background: none;
+            border: none;
+            text-decoration: underline;
+            font-size: 1.25rem;
+            color: var(--text-color);
+            padding: 1rem;
+            cursor: pointer;
+        }
+
+        /* Helper Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Hello, Rose</h1>
+    </header>
+
+    <main id="launcher">
+        <!-- Call -->
+        <button class="rose-btn" onclick="openCallModal()">
+            CALL SOMEONE
+        </button>
+
+        <!-- Text -->
+        <button class="rose-btn" onclick="window.location.href = 'contacts://'">
+            SEND TEXT
+        </button>
+
+        <!-- Add Contact -->
+        <button class="rose-btn" onclick="openAddContact()">
+            ADD CONTACT
+        </button>
+
+        <!-- Email -->
+        <button class="rose-btn" onclick="handleAol()">
+            CHECK EMAIL ON AOL
+        </button>
+
+        <!-- Search -->
+        <!-- Search -->
+        <button class="rose-btn" onclick="handleSearch()">
+            GOOGLE SEARCH
+        </button>
+
+        <!-- Photos -->
+        <a href="photos-redirect://" class="rose-btn">
+            MY PHOTOS
+        </a>
+
+        <!-- Settings Footer -->
+        <div class="settings-link">
+            <button onclick="openSystemSettings()">Settings</button>
+        </div>
+
+        <div class="text-center" style="margin-top: 1rem; opacity: 0.6; font-size: 1rem;">
+            v1.25
+        </div>
+    </main>
+
+    <!-- CALL / TEXT MODAL -->
+    <dialog id="contactModal">
+        <div class="modal-header">
+            <h2 id="contactModalTitle">Choose Person</h2>
+            <button class="close-btn" onclick="closeContactModal()">✕</button>
+        </div>
+
+        <div class="contact-list" id="contactListContainer">
+            <!-- Populated via JS -->
+            <div class="text-center">No contacts yet.</div>
+        </div>
+
+        <button class="rose-btn" id="dialerBtn" onclick="openDialer()" style="margin-top: 1rem;">
+            DIAL NUMBER
+        </button>
+    </dialog>
+
+    <!-- DIALER MODAL -->
+    <dialog id="dialerModal">
+        <div class="modal-header">
+            <h2>Dial Number</h2>
+            <button class="close-btn" onclick="closeDialerModal()">✕</button>
+        </div>
+
+        <input type="tel" id="manualPhoneInput" class="rose-input" style="font-size: 2.5rem; letter-spacing: 2px;"
+            placeholder="000-000-0000">
+
+        <button class="rose-btn" onclick="handleManualCall()">
+            CALL NOW
+        </button>
+    </dialog>
+
+    <!-- ADD CONTACT MODAL (Formerly Settings Modal) -->
+    <dialog id="settingsModal">
+        <div class="modal-header">
+            <h2>Add Contact</h2>
+            <button class="close-btn" onclick="closeAddContact()">✕</button>
+        </div>
+
+        <form onsubmit="saveContact(event)">
+            <label for="newName"
+                style="font-size: 1.5rem; font-weight: bold; display:block; margin-bottom:0.5rem;">Name</label>
+            <input type="text" id="newName" class="rose-input" required placeholder="e.g. John">
+
+            <label for="newPhone"
+                style="font-size: 1.5rem; font-weight: bold; display:block; margin-bottom:0.5rem;">Number</label>
+            <input type="tel" id="newPhone" class="rose-input" required placeholder="e.g. 555-1234">
+
+            <button type="submit" class="rose-btn">
+                SAVE CONTACT
+            </button>
+        </form>
+
+        <p style="font-size: 1rem; margin-top: 1rem;">
+            *Saving will download a contact card. Please tap it to add to your phone's address book.
+        </p>
+    </dialog>
+
+    <!-- SYSTEM SETTINGS MODAL -->
+    <dialog id="systemSettingsModal">
+        <div class="modal-header">
+            <h2>Settings</h2>
+            <button class="close-btn" onclick="closeSystemSettings()">✕</button>
+        </div>
+
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+            Current Version: 2026.02.01
+        </p>
+
+        <button class="rose-btn" onclick="updateApp()">
+            UPDATE APP
+        </button>
+    </dialog>
+
+    <script>
+        // State
+        let mode = 'call'; // 'call' or 'text'
+        let contacts = [];
+
+        // Load contacts from Storage
+        function loadContacts() {
+            const stored = localStorage.getItem('roseos-contacts');
+            if (stored) {
+                contacts = JSON.parse(stored);
+            } else {
+                // Default / Example
+                contacts = [];
+            }
+        }
+        loadContacts();
+
+        // --- CORE ACTIONS ---
+
+        function handleAol() {
+            // Simply navigate to the web version to prevent "invalid address" errors
+            window.location.href = 'https://mail.aol.com';
+        }
+
+        function handleSearch() {
+            const target = 'www.google.com';
+
+            // Attempt to force opening in Chrome app on iOS
+            window.location.href = `googlechromes://${target}`;
+
+            // Fallback to internal web view or default browser if Chrome is missing
+            setTimeout(() => {
+                if (document.hidden) return; // Success, app presumably opened
+                window.location.href = `https://${target}`;
+            }, 1000);
+        }
+
+        // --- MODAL MANIPULATION ---
+
+        const contactModal = document.getElementById('contactModal');
+        const dialerModal = document.getElementById('dialerModal');
+        const addContactModal = document.getElementById('settingsModal'); // Keeps ID but var name changes
+        const systemSettingsModal = document.getElementById('systemSettingsModal');
+
+        function openCallModal() {
+            mode = 'call';
+            document.getElementById('contactModalTitle').innerText = "Call Who?";
+            renderContacts();
+            contactModal.showModal();
+        }
+
+        function openTextModal() {
+            mode = 'text';
+            document.getElementById('contactModalTitle').innerText = "Text Who?";
+            renderContacts();
+            contactModal.showModal();
+        }
+
+        function closeContactModal() {
+            contactModal.close();
+        }
+
+        function openDialer() {
+            closeContactModal(); // Switch context
+            dialerModal.showModal();
+            document.getElementById('manualPhoneInput').focus();
+        }
+
+        function closeDialerModal() {
+            dialerModal.close();
+        }
+
+        function handleManualCall() {
+            const num = document.getElementById('manualPhoneInput').value;
+            if (!num) return;
+            window.location.href = `tel:${num}`;
+        }
+
+        function openAddContact() {
+            addContactModal.showModal();
+        }
+
+        function closeAddContact() {
+            addContactModal.close();
+        }
+
+        // --- SYSTEM SETTINGS LOGIC ---
+
+        function openSystemSettings() {
+            systemSettingsModal.showModal();
+        }
+
+        function closeSystemSettings() {
+            systemSettingsModal.close();
+        }
+
+        function updateApp() {
+            window.location.reload(true);
+        }
+
+        // --- CONTACT LIST LOGIC ---
+
+        function renderContacts() {
+            const container = document.getElementById('contactListContainer');
+            container.innerHTML = '';
+
+            if (contacts.length === 0) {
+                container.innerHTML = '<div class="text-center" style="font-size: 1.2rem;">No contacts saved in RoseOS.<br>Go to settings to add functionality.</div>';
+
+                // If empty, emphasize the dialer
+                const dialBtn = document.getElementById('dialerBtn');
+                dialBtn.innerText = "OPEN DIAL PAD";
+                return;
+            }
+
+            contacts.forEach(contact => {
+                const btn = document.createElement('button');
+                btn.className = 'rose-btn secondary';
+                btn.innerText = contact.name;
+                btn.style.marginBottom = '0.5rem';
+                btn.onclick = () => performContactAction(contact);
+                container.appendChild(btn);
+            });
+        }
+
+        function performContactAction(contact) {
+            if (mode === 'call') {
+                window.location.href = `tel:${contact.number}`;
+            } else {
+                window.location.href = `sms:${contact.number}`;
+            }
+            closeContactModal();
+        }
+
+        // --- THE VCARD HACK ---
+
+        function saveContact(e) {
+            e.preventDefault();
+            const name = document.getElementById('newName').value.trim();
+            const number = document.getElementById('newPhone').value.trim();
+
+            if (!name || !number) return;
+
+            // 1. Save to LocalStorage (for the App's UI)
+            const newContact = { name, number, id: Date.now() };
+            contacts.push(newContact);
+            localStorage.setItem('roseos-contacts', JSON.stringify(contacts));
+
+            // 2. Generate vCard (for the OS)
+            const vCardData =
+                `BEGIN:VCARD
+VERSION:3.0
+N:;${name};;;
+FN:${name}
+TEL;TYPE=CELL:${number}
+END:VCARD`;
+
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+
+            // Create invisible link and click it
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${name}.vcf`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Cleanup
+            document.getElementById('newName').value = '';
+            document.getElementById('newPhone').value = '';
+            closeAddContact();
+
+            alert(`Saved! check your downloads to add ${name} to your phone contacts.`);
+        }
+
+    </script>
+</body>
+
+</html>

@@ -275,9 +275,9 @@
         </button>
 
         <!-- Photos -->
-        <a href="photos-redirect://" class="rose-btn">
+        <button class="rose-btn" onclick="openPhotosLibrary()">
             MY PHOTOS
-        </a>
+        </button>
 
         <!-- Settings Footer -->
         <div class="settings-link">
@@ -288,6 +288,22 @@
             v1.25
         </div>
     </main>
+
+    <!-- CALL OPTIONS MODAL -->
+    <dialog id="callOptionsModal">
+        <div class="modal-header">
+            <h2>Call Someone</h2>
+            <button class="close-btn" onclick="closeCallOptions()">✕</button>
+        </div>
+
+        <button class="rose-btn" onclick="openDialerFromOptions()" style="margin-bottom: 1rem;">
+            SHOW DIALPAD
+        </button>
+
+        <button class="rose-btn" onclick="openContactsFromOptions()">
+            SELECT CONTACT
+        </button>
+    </dialog>
 
     <!-- CALL / TEXT MODAL -->
     <dialog id="contactModal">
@@ -400,14 +416,35 @@
             }, 1000);
         }
 
+        function openPhotosLibrary() {
+            // Open Photos app directly to the library/all photos view
+            window.location.href = 'photos-redirect://';
+        }
+
         // --- MODAL MANIPULATION ---
 
+        const callOptionsModal = document.getElementById('callOptionsModal');
         const contactModal = document.getElementById('contactModal');
         const dialerModal = document.getElementById('dialerModal');
         const addContactModal = document.getElementById('settingsModal'); // Keeps ID but var name changes
         const systemSettingsModal = document.getElementById('systemSettingsModal');
 
         function openCallModal() {
+            callOptionsModal.showModal();
+        }
+
+        function closeCallOptions() {
+            callOptionsModal.close();
+        }
+
+        function openDialerFromOptions() {
+            closeCallOptions();
+            dialerModal.showModal();
+            document.getElementById('manualPhoneInput').focus();
+        }
+
+        function openContactsFromOptions() {
+            closeCallOptions();
             mode = 'call';
             document.getElementById('contactModalTitle').innerText = "Call Who?";
             renderContacts();

@@ -55,6 +55,13 @@
                 /* System colors usually handle this, but enforcing high contrast feel */
                 --bg-color: #000000;
                 --text-color: #FFFFFF;
+                --bg-image: url('assets/rose-os-dm@1x.jpg');
+                --bg-image-set: -webkit-image-set(url('assets/rose-os-dm@1x.jpg') 1x,
+                        url('assets/rose-os-dm@2x.jpg') 2x,
+                        url('assets/rose-os-dm@3x.jpg') 3x);
+                --bg-image-set-std: image-set(url('assets/rose-os-dm@1x.jpg') 1x,
+                        url('assets/rose-os-dm@2x.jpg') 2x,
+                        url('assets/rose-os-dm@3x.jpg') 3x);
             }
         }
 
@@ -62,6 +69,13 @@
             :root {
                 --bg-color: #FFFFFF;
                 --text-color: #000000;
+                --bg-image: url('assets/rose-os-lm@1x.jpg');
+                --bg-image-set: -webkit-image-set(url('assets/rose-os-lm@1x.jpg') 1x,
+                        url('assets/rose-os-lm@2x.jpg') 2x,
+                        url('assets/rose-os-lm@3x.jpg') 3x);
+                --bg-image-set-std: image-set(url('assets/rose-os-lm@1x.jpg') 1x,
+                        url('assets/rose-os-lm@2x.jpg') 2x,
+                        url('assets/rose-os-lm@3x.jpg') 3x);
             }
         }
 
@@ -81,14 +95,9 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: url('assets/rose-os@1x.jpg');
-            /* Fallback */
-            background-image: -webkit-image-set(url('assets/rose-os@1x.jpg') 1x,
-                    url('assets/rose-os@2x.jpg') 2x,
-                    url('assets/rose-os@3x.jpg') 3x);
-            background-image: image-set(url('assets/rose-os@1x.jpg') 1x,
-                    url('assets/rose-os@2x.jpg') 2x,
-                    url('assets/rose-os@3x.jpg') 3x);
+            background-image: var(--bg-image);
+            background-image: var(--bg-image-set);
+            background-image: var(--bg-image-set-std);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;

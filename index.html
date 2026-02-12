@@ -540,11 +540,19 @@
             if (contacts.length === 0) {
                 container.innerHTML = '<div class="text-center" style="font-size: 1.2rem;">No contacts saved in RoseOS.<br>Go to settings to add functionality.</div>';
 
-                // If empty, emphasize the dialer
+                // If empty, emphasize searching contacts
                 const dialBtn = document.getElementById('dialerBtn');
-                dialBtn.innerText = "OPEN DIAL PAD";
+                dialBtn.innerText = "FIND A CONTACT";
+                dialBtn.onclick = () => {
+                    window.location.href = 'contacts://';
+                };
                 return;
             }
+
+            // Reset dialer button to default if contacts exist
+            const dialBtn = document.getElementById('dialerBtn');
+            dialBtn.innerText = "DIAL NUMBER";
+            dialBtn.onclick = openDialer;
 
             contacts.forEach(contact => {
                 const btn = document.createElement('button');

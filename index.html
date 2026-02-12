@@ -285,7 +285,7 @@
         </button>
 
         <!-- Text -->
-        <button class="rose-btn" onclick="window.location.href = 'contacts://'">
+        <button class="rose-btn" onclick="window.location.href = 'shortcuts://run-shortcut?name=Open%20Contacts'">
             SEND TEXT
         </button>
 
@@ -331,27 +331,12 @@
             SHOW DIALPAD
         </button>
 
-        <button class="rose-btn" onclick="openContactsFromOptions()">
+        <button class="rose-btn" onclick="window.location.href = 'shortcuts://run-shortcut?name=Open%20Contacts'">
             SELECT CONTACT
         </button>
     </dialog>
 
-    <!-- CALL / TEXT MODAL -->
-    <dialog id="contactModal">
-        <div class="modal-header">
-            <h2 id="contactModalTitle">Choose Person</h2>
-            <button class="close-btn" onclick="closeContactModal()">✕</button>
-        </div>
 
-        <div class="contact-list" id="contactListContainer">
-            <!-- Populated via JS -->
-            <div class="text-center">No contacts yet.</div>
-        </div>
-
-        <button class="rose-btn" id="dialerBtn" onclick="openDialer()" style="margin-top: 1rem;">
-            DIAL NUMBER
-        </button>
-    </dialog>
 
     <!-- DIALER MODAL -->
     <dialog id="dialerModal">
@@ -455,7 +440,7 @@
         // --- MODAL MANIPULATION ---
 
         const callOptionsModal = document.getElementById('callOptionsModal');
-        const contactModal = document.getElementById('contactModal');
+        // const contactModal = document.getElementById('contactModal'); // Removed
         const dialerModal = document.getElementById('dialerModal');
         const addContactModal = document.getElementById('settingsModal'); // Keeps ID but var name changes
         const systemSettingsModal = document.getElementById('systemSettingsModal');
@@ -474,6 +459,7 @@
             document.getElementById('manualPhoneInput').focus();
         }
 
+        /* Removed as contact modal is gone
         function openContactsFromOptions() {
             closeCallOptions();
             mode = 'call';
@@ -492,9 +478,10 @@
         function closeContactModal() {
             contactModal.close();
         }
+        */
 
         function openDialer() {
-            closeContactModal(); // Switch context
+            // closeContactModal(); // Removed
             dialerModal.showModal();
             document.getElementById('manualPhoneInput').focus();
         }
@@ -533,18 +520,20 @@
 
         // --- CONTACT LIST LOGIC ---
 
+        // --- CONTACT LIST LOGIC (Removed) ---
+        /*
         function renderContacts() {
             const container = document.getElementById('contactListContainer');
             container.innerHTML = '';
 
             if (contacts.length === 0) {
-                container.innerHTML = '<div class="text-center" style="font-size: 1.2rem;">No contacts saved in RoseOS.<br>Go to settings to add functionality.</div>';
+                container.innerHTML = '<div class="text-center" style="font-size: 1.2rem;">Click the button to search for a contact.</div>';
 
                 // If empty, emphasize searching contacts
                 const dialBtn = document.getElementById('dialerBtn');
                 dialBtn.innerText = "FIND A CONTACT";
                 dialBtn.onclick = () => {
-                    window.location.href = 'contacts://';
+                    window.location.href = 'shortcuts://run-shortcut?name=Open%20Contacts';
                 };
                 return;
             }
@@ -572,6 +561,7 @@
             }
             closeContactModal();
         }
+        */
 
         // --- THE VCARD HACK ---
 

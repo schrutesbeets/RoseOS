@@ -168,8 +168,16 @@
         main {
             display: flex;
             flex-direction: column;
-            gap: var(--gap-size);
             flex: 1;
+            /* gap: var(--gap-size);  Removed to use space-between below widget */
+        }
+
+        .launcher-actions {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+            padding-bottom: 0.5rem;
         }
 
         /* Rose Rules: Action Buttons */
@@ -366,7 +374,7 @@
 <body>
 
     <header>
-        <h1>Hello, Rose</h1>
+        <h1 id="app-title" style="user-select: none; -webkit-user-select: none;">Hello, Rose</h1>
         <button class="settings-icon-btn" onclick="window.location.reload(true)" aria-label="Refresh">
             <svg viewBox="0 0 24 24">
                 <path
@@ -398,41 +406,40 @@
             </div>
         </div>
 
-        <!-- Call -->
-        <button class="rose-btn" onclick="openCallModal()">
-            CALL SOMEONE
-        </button>
+        <div class="launcher-actions">
+            <!-- Call -->
+            <button class="rose-btn" onclick="openCallModal()">
+                CALL SOMEONE
+            </button>
 
-        <!-- Text -->
-        <button class="rose-btn" onclick="window.location.href = 'shortcuts://run-shortcut?name=Open%20Contacts'">
-            SEND TEXT
-        </button>
+            <!-- Text -->
+            <button class="rose-btn" onclick="window.location.href = 'shortcuts://run-shortcut?name=Open%20Contacts'">
+                SEND TEXT
+            </button>
 
-        <!-- Add Contact -->
-        <button class="rose-btn" onclick="openAddContact()">
-            ADD CONTACT
-        </button>
+            <!-- Add Contact -->
+            <button class="rose-btn" onclick="openAddContact()">
+                ADD CONTACT
+            </button>
 
-        <!-- Email -->
-        <button class="rose-btn" onclick="handleAol()">
-            CHECK EMAIL ON AOL
-        </button>
+            <!-- Email -->
+            <button class="rose-btn" onclick="handleAol()">
+                CHECK EMAIL ON AOL
+            </button>
 
-        <!-- Search -->
-        <!-- Search -->
-        <button class="rose-btn" onclick="handleSearch()">
-            GOOGLE SEARCH
-        </button>
+            <!-- Search -->
+            <button class="rose-btn" onclick="handleSearch()">
+                GOOGLE SEARCH
+            </button>
 
-        <!-- Photos -->
-        <button class="rose-btn" onclick="openPhotosLibrary()">
-            MY PHOTOS
-        </button>
+            <!-- Photos -->
+            <button class="rose-btn" onclick="openPhotosLibrary()">
+                MY PHOTOS
+            </button>
 
-
-
-        <div class="text-center" style="margin-top: 1rem; opacity: 0.6; font-size: 1rem;">
-            Version 2.0
+            <div class="text-center" style="opacity: 0.6; font-size: 1rem;">
+                Version 2.0
+            </div>
         </div>
     </main>
 
@@ -467,6 +474,36 @@
         <button class="rose-btn" onclick="handleManualCall()">
             CALL NOW
         </button>
+    </dialog>
+
+    <!-- SYSTEM SETTINGS MODAL -->
+    <dialog id="systemSettingsModal" class="hidden">
+        <!-- Removed - but keeping placeholder structure if ever needed -->
+    </dialog>
+
+    <!-- SECRET README MODAL -->
+    <dialog id="readmeModal">
+        <div class="modal-header">
+            <h2>System Guide</h2>
+            <button class="close-btn" onclick="document.getElementById('readmeModal').close()">✕</button>
+        </div>
+        <div style="font-size: 1.1rem; line-height: 1.4; max-height: 60vh; overflow-y: auto;">
+            <p><strong>Device Requirements</strong></p>
+            <p>iOS (iPhone) recommended. Add to Home Screen via Safari Share menu.</p>
+
+            <p><strong>Required Shortcuts</strong></p>
+            <p>Create these in the Shortcuts app (Exact Names):</p>
+            <ul>
+                <li><strong>"Open Contacts"</strong>: Action - Open App (Contacts)</li>
+                <li><strong>"Recent Photos"</strong>: Action - Open App (Photos)</li>
+            </ul>
+
+            <p><strong>Other</strong></p>
+            <ul>
+                <li>Google Search: Opens in Chrome if detected.</li>
+                <li>AOL Mail: Redirects to web mail.</li>
+            </ul>
+        </div>
     </dialog>
 
     <!-- ADD CONTACT MODAL (Formerly Settings Modal) -->
@@ -845,7 +882,43 @@ END:VCARD`;
         }
 
         // Auto-init on load
-        window.addEventListener('load', initWeather);
+        window.addEventListener('load', () => {
+            initWeather();
+            initSecretReadme();
+        });
+
+        // --- SECRET INTERACTION ---
+
+        function initSecretReadme() {
+            const title = document.getElementById('app-title');
+            let pressTimer;
+
+            const startPress = (e) => {
+                // Prevent context menu/selection on mobile
+                pressTimer = window.setTimeout(() => {
+                    document.getElementById('readmeModal').showModal();
+                }, 1500);
+            };
+
+            const endPress = () => {
+                clearTimeout(pressTimer);
+            };
+
+            // Touch events for mobile
+            title.addEventListener('touchstart', startPress, { passive: true });
+            title.addEventListener('touchend', endPress);
+            title.addEventListener('touchcancel', endPress);
+
+            // Mouse events for desktop testing
+            title.addEventListener('mousedown', startPress);
+            title.addEventListener('mouseup', endPress);
+            title.addEventListener('mouseleave', endPress);
+
+            // Prevent the context menu popup on long press
+            title.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+            });
+        }
 
     </script>
 </body>

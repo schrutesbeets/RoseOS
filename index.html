@@ -310,7 +310,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            /* specific reset to remove button look */
             background: transparent;
             border: none;
             padding: 0.5rem 0.5rem;
@@ -318,65 +317,50 @@
             margin-top: 1rem;
         }
 
-        .weather-info {
+        .weather-left-group {
             display: flex;
-            flex-direction: row;
-            align-items: flex-end;
+            align-items: center;
             gap: 1.5rem;
         }
 
-        .weather-details-left {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            text-align: right;
-            margin-bottom: 0.8rem;
-        }
-
         .weather-temp {
-            font-size: 4.5rem;
+            font-size: 5rem;
             font-weight: 800;
             line-height: 1;
             letter-spacing: -2px;
         }
 
+        .weather-details-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
         .weather-location {
-            font-size: 1.25rem;
-            font-weight: 500;
-            opacity: 0.7;
-            margin-top: 0.25rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            opacity: 0.9;
         }
 
         .weather-range {
             font-size: 1.1rem;
-            font-weight: 700;
-            opacity: 0.9;
-            margin-top: 0.25rem;
+            font-weight: 500;
+            opacity: 0.7;
             display: flex;
-            gap: 1rem;
-        }
-
-        .weather-visual {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            min-width: 100px;
-        }
-
-        .weather-icon svg {
-            width: 5rem;
-            height: 5rem;
-            fill: currentColor;
-            /* Make icon stroke thicker like reference? Standard SVG fill is fine for now */
+            gap: 0.75rem;
         }
 
         .weather-desc {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 500;
-            margin-top: 0.5rem;
-            text-transform: lowercase;
+            opacity: 0.7;
+            text-transform: capitalize;
+        }
+
+        .weather-icon svg {
+            width: 4.5rem;
+            height: 4.5rem;
+            fill: currentColor;
         }
     </style>
 </head>
@@ -396,25 +380,23 @@
     <main id="launcher">
         <!-- Weather Widget -->
         <div id="weather-widget" class="weather-widget" onclick="initWeather()" style="display: none;">
-            <div class="weather-info">
-                <div class="weather-details-left">
+            <div class="weather-left-group">
+                <div class="weather-temp" id="weather-temp">--°</div>
+                <div class="weather-details-col">
                     <div class="weather-location" id="weather-location">Locating...</div>
                     <div class="weather-range" id="weather-range">
                         <!-- Populated by JS -->
                     </div>
+                    <div class="weather-desc" id="weather-desc">loading</div>
                 </div>
-                <div class="weather-temp" id="weather-temp">--°</div>
             </div>
 
-            <div class="weather-visual">
-                <div class="weather-icon" id="weather-icon">
-                    <!-- Default loading icon/placeholder -->
-                    <svg viewBox="0 0 24 24">
-                        <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-5.5l6-4.5-6-4.5v9z" />
-                    </svg>
-                </div>
-                <div class="weather-desc" id="weather-desc">loading</div>
+            <div class="weather-icon" id="weather-icon">
+                <!-- Default loading icon/placeholder -->
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-5.5l6-4.5-6-4.5v9z" />
+                </svg>
             </div>
         </div>
 
@@ -806,36 +788,37 @@ END:VCARD`;
         }
 
         function getWeatherAsset(code) {
-            // WMO Weather interpretation codes (WW)
-            // 0: Clear sky
-            // 1, 2, 3: Mainly clear, partly cloudy, and overcast
-            // 45, 48: Fog
-            // 51, 53, 55: Drizzle
-            // 61, 63, 65: Rain
-            // 71, 73, 75: Snow
-            // 77: Snow grains
-            // 80, 81, 82: Rain showers
-            // 85, 86: Snow showers
-            // 95: Thunderstorm
-            // 96, 99: Thunderstorm with hail
-
             let iconSvg = '';
             let label = '';
 
-            // SUN / CLEAR
-            const svgSun = `<svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.93c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0zm13.48 14.14c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0zm0-14.14c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41zM5.99 19.07c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41z"/></svg>`;
+            // MATERIAL ICON PATHS
 
-            // CLOUD
+            // Sunny / wb_sunny
+            const svgSun = `<svg viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg>`;
+
+            // Cloud / cloud
             const svgCloud = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>`;
 
-            // RAIN
-            const svgRain = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-2 3c-.15.22-.39.34-.64.34-.14 0-.29-.04-.42-.11-.38-.21-.52-.69-.31-1.08l2-3c.21-.38.69-.52 1.08-.31.38.21.52.69.31 1.08zm4.5 0l-2 3c-.15.22-.39.34-.64.34-.14 0-.29-.04-.42-.11-.38-.21-.52-.69-.31-1.08l2-3c.21-.38.69-.52 1.08-.31.38.21.52.69.31 1.08z"/></svg>`;
+            // Rain / rainy (Using a generic heavy rain look or standard)
+            // This path is a mix, I will use a cleaner one
+            const svgRain = `<svg viewBox="0 0 24 24"><path d="M4.11 14.84c-1.31-.59-2.11-1.92-2.11-3.34 0-2.21 1.79-4 4-4 .19 0 .37.02.55.05C7.54 4.88 10.07 3 13 3c3.31 0 6 2.69 6 6 0 .34-.04.68-.1 1a5.006 5.006 0 0 1 4.1 4.96c0 2.22-1.44 4.12-3.41 4.78l-1.09-3.26c.92-.31 1.5-1.12 1.5-2.02 0-1.29-1.06-2.36-2.35-2.4l-.65-.02V11.5c0-2.48-2.02-4.5-4.5-4.5-2.48 0-4.5 2.02-4.5 4.5v.69l-.66-.17c-1.15-.3-2.35.4-2.64 1.56-.25.99.27 2.03 1.18 2.45l-1.77 3.21zM7 15h2v6H7v-6zm4 2h2v6h-2v-6zm4-2h2v6h-2v-6z"/></svg>`;
+            // Better Rain:
+            const svgRainClean = `<svg viewBox="0 0 24 24"><path d="M12 4c-3.6 0-6.6 2.6-7.3 6H4c-2.2 0-4 1.8-4 4s1.8 4 4 4h1v3h2v-3h4v3h2v-3h4v3h2v-3h1c2.2 0 4-1.8 4-4s-1.8-4-4-4h-.7C21.6 6.6 18.6 4 15 4h-3z"/></svg>`; // This is more like 'cloudy with rain' in a blocky way. Let's use standard cloud + drops.
+            // Actually, for simplicity and error avoidance, I will stick to the previous cloud path plus 3 drop paths if I can compose it, or just use the user's "rainy" request which implies a specific icon.
+            // Let's use the one I found in search or a very standard one.
+            // SVG Rain (Standard Material):
+            const svgRainMat = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM13 19h-2v-2h2v2zm0 4h-2v-2h2v2zm-4-4H7v-2h2v2zm0 4H7v-2h2v2zm8-4h-2v-2h2v2zm0 4h-2v-2h2v2z"/></svg>`;
 
-            // SNOW
-            const svgSnow = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM12 16.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zm-5 0c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zm10 0c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z"/></svg>`;
+            // Snow / ac_unit
+            const svgSnow = `<svg viewBox="0 0 24 24"><path d="M22 11h-2V9h-2v2h-2.2c-.6-1.7-1.9-3-3.6-3.6V5h2V3h-2v2h-2V3h-2v2H6.6c-1.7.6-3 1.9-3.6 3.6H1V9h2v2H1v2h2v2h2.2c.6 1.7 1.9 3 3.6 3.6V21h-2v2h2v-2h2v2h2v-2h2.2c1.7-.6 3-1.9 3.6-3.6H21v-2h2v-2h-2v-2zm-10 4c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>`;
 
-            // THUNDER
-            const svgThunder = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14.5 18l-3.5 6v-5H9l4-7v5h3z"/></svg>`;
+            // Thunder / thunderstorm
+            const svgThunder = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM13.5 18l-3.5 6V19h-3l3.5-6v5h3z"/></svg>`;
+
+            // Fog / Part Cloud (for general default)
+            const svgPartlyCloudy = `<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>`; // Reusing cloud for now as fog is tricky without dedicated path, but let's try a fog path
+            // Fog / fog
+            const svgFog = `<svg viewBox="0 0 24 24"><path d="M4 19h16v-2H4v2zm0 4h16v-2H4v2zm2-7h12v-2H6v2zm-2-5v2h16V11c0-2.97-2.16-5.43-5-5.91V5c0-2.76-2.24-5-5-5S5 2.24 5 5v.09C2.16 5.57 0 8.03 0 11z"/></svg>`; // This is 'fog' (weather-fog) approx
 
             if (code === 0) {
                 iconSvg = svgSun;
@@ -844,10 +827,10 @@ END:VCARD`;
                 iconSvg = svgCloud;
                 label = "Cloudy";
             } else if ([45, 48].includes(code)) {
-                iconSvg = svgCloud;
+                iconSvg = svgFog;
                 label = "Foggy";
             } else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) {
-                iconSvg = svgRain;
+                iconSvg = svgRainMat;
                 label = "Rain";
             } else if ([71, 73, 75, 77, 85, 86].includes(code)) {
                 iconSvg = svgSnow;
@@ -856,7 +839,7 @@ END:VCARD`;
                 iconSvg = svgThunder;
                 label = "Thunder";
             } else {
-                iconSvg = svgCloud;
+                iconSvg = svgPartlyCloudy;
                 label = "Cloudy";
             }
 

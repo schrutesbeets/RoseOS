@@ -533,6 +533,34 @@
         </p>
     </dialog>
 
+    <!-- SETUP WIZARD MODAL -->
+    <dialog id="setupWizardModal">
+        <div class="modal-header">
+            <h2>Welcome to RoseOS</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">To get started, please install the required Shortcuts.
+            </p>
+
+            <a href="https://www.icloud.com/shortcuts/a0302acab5794b92ae43daae892bd5a6" target="_blank"
+                class="rose-btn">
+                Download Shortcut 1
+            </a>
+            <a href="https://www.icloud.com/shortcuts/f7bd2f8b96b94f7cbc616f2acf0678bb" target="_blank"
+                class="rose-btn">
+                Download Shortcut 2
+            </a>
+            <a href="https://www.icloud.com/shortcuts/dd3760396e754d4f8ffa087b2e5df1c6" target="_blank"
+                class="rose-btn">
+                Download Shortcut 3
+            </a>
+
+            <button class="rose-btn secondary" onclick="completeSetup()" style="margin-top: 1rem;">
+                FINISH SETUP
+            </button>
+        </div>
+    </dialog>
+
 
 
     <script>
@@ -886,6 +914,7 @@ END:VCARD`;
         window.addEventListener('load', () => {
             initWeather();
             initSecretReadme();
+            initSetupWizard();
         });
 
         // --- SECRET INTERACTION ---
@@ -919,6 +948,23 @@ END:VCARD`;
             title.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
             });
+        }
+
+        // --- SETUP WIZARD ---
+
+        function initSetupWizard() {
+            const hasSetup = localStorage.getItem('roseOSSetupComplete');
+            if (!hasSetup) {
+                // Small delay to ensure styles load or just for effect
+                setTimeout(() => {
+                    document.getElementById('setupWizardModal').showModal();
+                }, 500);
+            }
+        }
+
+        function completeSetup() {
+            localStorage.setItem('roseOSSetupComplete', 'true');
+            document.getElementById('setupWizardModal').close();
         }
 
     </script>
